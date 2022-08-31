@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"  >
+
+    <title>sudoku</title>
+  </head>
+  <body>
+  <div class="container">
+    <h1>SUDOKU</h1>
+
+    <script>
+    "use strict";
+    let vct = [];
+    let adr =[];
+    
+    let grille=[
+    [' ','9',' ',' ',' ',' ',' ',' ',' '],
+    [' ',' ',' ',' ','8','2','4','7',' '],
+    [' ',' ','4',' ','3',' ','1',' ','6'],
+    [' ',' ','3',' ',' ',' ',' ','6',' '],
+    ['1',' ',' ',' ','5',' ',' ',' ','9'],
+    [' ','7',' ',' ',' ',' ','2',' ',' '],
+    ['3',' ','7',' ','2',' ','5',' ',' '],
+    [' ','6','2','5','1',' ',' ',' ',' '],
+    [' ',' ',' ',' ',' ',' ',' ','3',' ']
+    ];
+    dspsdk("origine");
+    
+    /* remplir les blancs */
+    for (let i = 0; i < 9; i++) {for (let j = 0; j < 9; j++) {if (grille[i][j]==' ')grille[i][j]='123456789';}}
+    /*dspsdk("blancs");*/
+    
+    for (let nn = 0;nn < 4; nn++) {
+    
+    /* traitement par ligne */
+    for (let i = 0; i < 9; i++) {
+    	for (let j = 0; j < 9; j++) vct[j] = grille[i][j];
+    	vct = proc_vec(vct);
+    	adr = ['','','','','','','','','',''];
+    	/*dspvct('tag1', vct);*/
+    	for (let m=0; m<9; m++){for(let n=0; n<vct[m].length; n++){ adr[vct[m][n]] += m;}}
+    		/*dspvct('tag2', adr);*/
+    		/* adr[0] reste égal à '' , il ne sera pas pris en compte */
+    		adr = proc_vec(adr.slice(1));
+    		vct = ['','','','','','','','','',''];
+    		/*dspvct('tag3', adr);*/
+    	for (let m=0; m<9; m++){for(let n=0; n<adr[m].length; n++){ vct[adr[m][n]] += m+1;}}
+    		/*dspvct('tag4', vct);*/
+    		
+    	for (let j = 0; j < 9; j++) grille[i][j] = vct[j];
+    }
+    /*dspsdk("par ligne");*/
+    
+    /* traitement par colonne */
+    for (let i = 0; i < 9; i++) {
+    	for (let j = 0; j < 9; j++) vct[j] = grille[j][i];
+    	vct = proc_vec(vct);
+    	adr = ['','','','','','','','','',''];
+    	/*dspvct('tag1', vct);*/
+    	for (let m=0; m<9; m++){for(let n=0; n<vct[m].length; n++){ adr[vct[m][n]] += m;}}
+    		/*dspvct('tag2', adr);*/
+    		/* adr[0] reste égal à '' , il ne sera pas pris en compte */
+    		adr = proc_vec(adr.slice(1));
+    		vct = ['','','','','','','','','',''];
+    		/*dspvct('tag3', adr);*/
+    	for (let m=0; m<9; m++){for(let n=0; n<adr[m].length; n++){ vct[adr[m][n]] += m+1;}}
+    		/*dspvct('tag4', vct);*/
+    	for (let j = 0; j < 9; j++) grille[j][i] = vct[j];
+    }
+    /* dspsdk("par colonne");*/
+    
+    /* traitement par zone */
+    for (let i = 0; i < 9; i++) {
+    	for (let j = 0; j < 9; j++) vct[j] = grille[3*Math.floor(i/3)+Math.floor(j/3)][3*(i%3)+j%3];
+    	/*document.write("i:"+i+"vector:"+vct+"<br>");*/
+    	vct = proc_vec(vct);
+    	adr = ['','','','','','','','','',''];
+    	/*dspvct('tag1', vct);*/
+    	for (let m=0; m<9; m++){for(let n=0; n<vct[m].length; n++){ adr[vct[m][n]] += m;}}
+    		/*dspvct('tag2', adr);*/
+    		/* adr[0] reste égal à '' , il ne sera pas pris en compte */
+    		adr = proc_vec(adr.slice(1));
+    		vct = ['','','','','','','','','',''];
+    		/*dspvct('tag3', adr);*/
+    	for (let m=0; m<9; m++){for(let n=0; n<adr[m].length; n++){ vct[adr[m][n]] += m+1;}}
+    		/*dspvct('tag4', vct);*/
+    	for (let j = 0; j < 9; j++) grille[3*Math.floor(i/3)+Math.floor(j/3)][3*(i%3)+j%3] = vct[j];
+    }
+    dspsdk("par zone");
+    
+    }
+    
+    function proc_vec(vctx){
+      
+		for (let i = 0; i < 9; i++){
+		switch (vctx[i].length){
+			case 1: for (let j = 0; j < 9; j++) if (i!=j) vctx[j] = vctx[j].replace(vctx[i],''); break;
+			
+			case 2:
+				for (let j=i+1; j<9; j++){
+					if (vctx[i]==vctx[j]){
+						for (let k=0; k<9; k++)	{
+							if ((k!=i)&&(k!=j)){
+								vctx[k] = vctx[k].replace(vctx[i][0],'');	
+								vctx[k] = vctx[k].replace(vctx[i][1],'');	
+							}
+						}				
+					}	
+				}
+				break;	
+			}
+			}
+		return vctx;
+		
+		}
+    
+    function dspsdk(tag){
+    let nn=0;
+    for (let i = 0; i < 9; i++) {for (let j = 0; j < 9; j++) {nn += parseInt(grille[i][j]);}}
+    let html= "<p>"+tag+"- somme:"+nn+"</p><table class='table table-bordered table-sm table-hover bg-light'>";
+    html += "<tbody>";
+    for (let i = 0; i < 9; i++) {
+    	html +=  "<tr>";
+    	for (let j = 0; j < 9; j++) { html += "<td>" + grille[i][j] +"</td>";}
+    	html +=  "</tr>";
+    }
+    html += "</tbody></table><hr>";
+    document.write(html);
+    }
+    
+    function dspvct(tag, tmpvct){
+    let html= "<p>"+tag+"</p><table class='table table-bordered table-sm table-hover bg-light'>";
+    html += "<tbody>";
+    for (let i = 0; i < 10; i++) {
+    	
+    	  html += "<tr><td>" + i+"</td><td>"+tmpvct[i]+"</td></tr>";
+    	
+    }
+    html += "</tbody></table>";
+    document.write(html);
+    
+    
+    }
+    
+    
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    </div>
+  </body>
+</html>
